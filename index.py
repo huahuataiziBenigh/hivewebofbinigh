@@ -2,9 +2,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
-
-from server import app
-
+import dash
 # from views.index import index_page
 # from views.age import age_page
 # from views.sex import sex_page
@@ -16,8 +14,10 @@ from views.moving import moving_page
 from views.rank import rank_page
 from views.pivot import pivot_page
 from views.cross import cross_page
-from views.test2 import test2_page
 
+from application import app
+
+server = app.server
 app.layout = html.Div([
         # 监听url变化
         dcc.Location(id='url'),
@@ -42,7 +42,7 @@ app.layout = html.Div([
 
                 # 子页面区域
                 html.Hr(),
-
+                dcc.Interval(id='index-first-interval', interval=1, max_intervals=1, disabled=False),
                 dbc.Nav(
                     [
                         dbc.NavLink('drill & roll', href='/', active="exact", external_link=True),
@@ -75,8 +75,6 @@ app.layout = html.Div([
         'height': '100vh',
         'display': 'flex'
     })
-
-server = app.server
 
 
 # 路由总控
@@ -117,6 +115,15 @@ def render_page_content(pathname):
         return test1_page
 
     return html.H1('您访问的页面不存在！')
+
+
+@app.callback(
+    Output('page-content', 'children'),
+    Input('index-first-interval', 'n_intervals')
+)
+def render_page_content(n_intervals):
+    if n_intervals:
+        return test1_page
 
 
 if __name__ == '__main__':
