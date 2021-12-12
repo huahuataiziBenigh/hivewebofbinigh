@@ -3,7 +3,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-from server import app, server
+from server import app
 
 # from views.index import index_page
 # from views.age import age_page
@@ -75,6 +75,8 @@ app.layout = html.Div([
         'height': '100vh',
         'display': 'flex'
     })
+
+server = app.server
 
 
 # 路由总控
