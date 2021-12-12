@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import json
 import dash
-from server import app
+from application import app
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
@@ -24,7 +24,6 @@ from pandas import DataFrame
                Input('scatter', 'relayoutData')])
 def listen_to_hover(hoverData, clickData, selectedData, relayoutData):
     return str(hoverData), str(clickData), str(selectedData), str(relayoutData)
-'''''''''
 
 
 @app.callback([Output('scatter', 'figure'),
@@ -57,19 +56,24 @@ def listen_to_figure(click_data, store_data, flag_data):
                     rollup_fig_bar = px.bar(df_data, x="Area", y='AoD', height=600)
                     return rollup_fig_bar, 0
     return dash.no_update
+'''''''''
 
 
-@app.callback([
-               Output('scatter', 'figure'),
+@app.callback([Output('scatter', 'figure'),
                Output('rollup-query-store-1', 'data'),
                Output('rollup-display-flag-store', 'data')],
-              Input('rollup-query-button', 'n_clicks'),
+              [Input('rollup-query-button', 'n_clicks'),
+               Input('scatter', 'clickData')],
               [State('rollup-Time-Dim-dropdown', 'value'),
                State('rollup-Area-Dim-dropdown', 'value'),
                State('rollup-Platform-Dim-dropdown', 'value'),
-               State('rollup-Software-Dim-dropdown', 'value')])
-def test_callback(n_clicks, time_dim, area_dim, platform_dim, software_dim):
-    if n_clicks:
+               State('rollup-Software-Dim-dropdown', 'value'),
+               State('rollup-query-store-1', 'data'),
+               State('rollup-display-flag-store', 'data')])
+def test_callback(n_clicks, click_data, time_dim, area_dim, platform_dim, software_dim, store_data, flag_data):
+    ctx = dash.callback_context
+    triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    if triggered_id == 'rollup-query-button':
         fig_test = px.scatter(x=range(n_clicks), y=range(n_clicks), height=600)
         fig_test.update_layout(clickmode='event+select')  # 设置点击模式
         test_word = 'n:{}, t:{}, a：{}, p:{}, s:{}'.format(n_clicks, time_dim, area_dim,
@@ -142,6 +146,30 @@ def test_callback(n_clicks, time_dim, area_dim, platform_dim, software_dim):
             return test_word, rollup_fig_bar
             '''
         return fig_test, dash.no_update, dash.no_update
+    else:
+        if store_data:
+            df_data = pd.read_csv('rollup_query.csv')
+            if not df_data.empty:
+                if flag_data == 0:
+                    if store_data['time'] == 'rollup':
+                        mask_time = df_data['Month'] == click_data['points'][0]['x']
+                        query_data = df_data[mask_time]
+                        rollup_fig_bar = px.line(query_data, x="Day", y='AoD', height=600)
+                        return rollup_fig_bar, 1
+                    elif store_data['area'] == 'rollup':
+                        mask_area = df_data['Area'] == click_data['points'][0]['x']
+                        query_data = df_data[mask_area]
+                        rollup_fig_bar = px.line(query_data, x="Province", y='AoD', height=600)
+                        return rollup_fig_bar, 1
+                elif flag_data == 1:
+                    if store_data['time'] == 'rollup':
+                        # query_data = df_data['AoD'].groupby(df_data['Month']).sum().reset_index()
+                        rollup_fig_bar = px.bar(df_data, x="Month", y='AoD', height=600)
+                        return rollup_fig_bar, 0
+                    elif store_data['area'] == 'rollup':
+                        # query_data = df_data['AoD'].groupby(df_data['Area']).sum().reset_index()
+                        rollup_fig_bar = px.bar(df_data, x="Area", y='AoD', height=600)
+                        return rollup_fig_bar, 0
     return dash.no_update, dash.no_update, dash.no_update
 
 
