@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import json
 import dash
-from server import app
+from application import app
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
@@ -12,7 +12,7 @@ from impala.dbapi import connect
 from connect_hive import connect_hive
 from pandas import DataFrame
 
-
+'''
 @app.callback([Output('pivot-scatter', 'figure'),
                Output('pivot-display-flag-store', 'data')],
               Input('pivot-scatter', 'clickData'),
@@ -33,19 +33,25 @@ def listen_to_figure(click_data, store_data, flag_data):
                 pivot_fig_bar.update_layout(barmode='group')
                 return pivot_fig_bar, 0
     return dash.no_update
+'''
 
 
 @app.callback([
                Output('pivot-scatter', 'figure'),
                Output('pivot-query-store-1', 'data'),
                Output('pivot-display-flag-store', 'data')],
-              Input('pivot-query-button', 'n_clicks'),
+              [Input('pivot-query-button', 'n_clicks'),
+               Input('pivot-scatter', 'clickData')],
               [State('pivot-Time-Dim-dropdown', 'value'),
                State('pivot-Area-Dim-dropdown', 'value'),
                State('pivot-Platform-Dim-dropdown', 'value'),
-               State('pivot-Software-Dim-dropdown', 'value')])
-def test_callback(n_clicks, time_dim, area_dim, platform_dim, software_dim):
-    if n_clicks:
+               State('pivot-Software-Dim-dropdown', 'value'),
+               State('pivot-query-store-1', 'data'),
+               State('pivot-display-flag-store', 'data')])
+def test_callback(n_clicks, click_data, time_dim, area_dim, platform_dim, software_dim, store_data, flag_data):
+    ctx = dash.callback_context
+    triggered_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    if triggered_id == 'pivot-query-button':
         fig_test = px.scatter(x=range(n_clicks), y=range(n_clicks), height=400)
         fig_test.update_layout(clickmode='event+select')  # 设置点击模式
         test_word = 'n:{}, t:{}, a：{}, p:{}, s:{}'.format(n_clicks, time_dim, area_dim,
@@ -105,6 +111,20 @@ def test_callback(n_clicks, time_dim, area_dim, platform_dim, software_dim):
             return test_word, pivot_fig_bar
             '''
         return fig_test, dash.no_update, dash.no_update, 1
+    else:
+        if store_data:
+            df_data = pd.read_csv('pivot_query.csv')
+            if not df_data.empty:
+                if flag_data == 0:
+                    pivot_fig_bar = px.bar(df_data, x=store_data['dim2'], color=store_data['dim1'], y='AoD',
+                                           height=600, barmode='group')
+                    pivot_fig_bar.update_layout(barmode='group')
+                    return pivot_fig_bar, 1
+                else:
+                    pivot_fig_bar = px.bar(df_data, x=store_data['dim1'], color=store_data['dim2'], y='AoD',
+                                           height=600, barmode='group')
+                    pivot_fig_bar.update_layout(barmode='group')
+                    return pivot_fig_bar, 0
     return dash.no_update, dash.no_update, dash.no_update, 1
 
 

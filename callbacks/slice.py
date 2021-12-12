@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import json
 import dash
-from server import app
+from application import app
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html

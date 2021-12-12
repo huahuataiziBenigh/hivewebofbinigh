@@ -5,7 +5,7 @@ import plotly.express as px
 
 from models.statistics import Statistics
 
-from server import app
+from application import app
 
 statistics_data = (
     pd.DataFrame(Statistics.fetch_all()).rename(columns={

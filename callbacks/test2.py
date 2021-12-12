@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import json
 import dash
-from server import app
+from application import app
 
 
 province2city_dict = {
