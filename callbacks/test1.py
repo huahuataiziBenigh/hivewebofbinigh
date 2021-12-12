@@ -173,6 +173,7 @@ def test_callback(n_clicks, click_data, time_dim, area_dim, platform_dim, softwa
     return dash.no_update, dash.no_update, dash.no_update
 
 
+'''
 @app.callback(Output('rollup-connect-output-1', 'children'),
               Input('rollup-connect-button', 'n_clicks'),
               prevent_initial_call=True)
@@ -186,7 +187,7 @@ def connect_test(n_clicks):
     return dash.no_update
 
 
-'''
+
 @app.callback([Output('rollup-dropdown-output-1', 'children'),
                Output('scatter', 'figure'),
                Output('rollup-query-store-1', 'data'),
@@ -209,7 +210,6 @@ def rollup_func_test(n_clicks):
         print(query_data)
         return test_word, fig_test, data_store, query_data, 0
     return dash.no_update
-'''
 
 
 @app.callback([Output('rollup-dropdown-output-1', 'children'),
@@ -236,6 +236,7 @@ def rollup_func_test(n_clicks, st_data):
 
         return test_word, rollup_fig_bar, data_store
     return dash.no_update
+'''
 
 
 @app.callback([Output('rollup-Time-Dim-dropdown', 'options'),
