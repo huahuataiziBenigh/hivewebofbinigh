@@ -6,7 +6,7 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 
 import callbacks.test1
-from server import app
+from application import app
 testlist = ['四川省', '陕西省', '广东省']
 options1 = [{'label': item, 'value': item}for item in testlist]
 
