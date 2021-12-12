@@ -1,1 +1,1 @@
-web: gunicorn -w 4 index:server
+web: gunicorn -w 8 index:server
