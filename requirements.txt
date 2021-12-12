@@ -2,5 +2,7 @@ gunicorn
 pandas==1.2.1
 plotly==5.4.0
 dash==2.0.0
+pip install thriftpy
+pip install thrift_sasl
 impyla==0.17.0
 dash_bootstrap_components==1.0.1
