@@ -1,6 +1,6 @@
 import dash_html_components as html
 
-from server import app
+from application import app
 
 index_page = html.Div(
     [

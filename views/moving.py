@@ -101,7 +101,7 @@ moving_page = html.Div(
         ]),
         html.Hr(),
         dbc.Container([], id='moving-figure-container'),
-        dcc.Graph(figure=fig, id='scatter'),
+        dcc.Graph(figure=fig, id='moving-scatter'),
         html.Hr(),
 
     ]
