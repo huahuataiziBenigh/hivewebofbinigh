@@ -26,6 +26,7 @@ app.layout = html.Div([
             [
                 # 标题区域
                 html.Div(
+
                     html.H3(
                         'Hive OLAP',
                         style={
@@ -43,7 +44,7 @@ app.layout = html.Div([
 
                 # 子页面区域
                 html.Hr(),
-                dcc.Interval(id='index-first-interval', interval=1, max_intervals=1, disabled=False),
+
                 dbc.Nav(
                     [
                         dbc.NavLink('drill & roll', href='/', active="exact", external_link=True),
@@ -116,15 +117,6 @@ def render_page_content(pathname):
         return test1_page
 
     return html.H1('您访问的页面不存在！')
-
-
-@app.callback(
-    Output('page-content', 'children'),
-    Input('index-first-interval', 'n_intervals')
-)
-def render_page_content(n_intervals):
-    if n_intervals:
-        return test1_page
 
 
 if __name__ == '__main__':
