@@ -1,8 +1,9 @@
-import dash_html_components as html
-import dash_core_components as dcc
+# import dash_html_components as html
+# import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import dash
+from dash import html, dcc
 # from views.index import index_page
 # from views.age import age_page
 # from views.sex import sex_page
